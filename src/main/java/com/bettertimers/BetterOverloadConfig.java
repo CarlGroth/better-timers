@@ -11,7 +11,7 @@ public interface BetterOverloadConfig extends Config
 	@ConfigItem(
 		keyName = "brewTick",
 		name = "Show brew tick",
-		description = "Configures whether or not the overload text shows up green on the tick that u can brew without losing stats."
+		description = "Shows the timer in green on overload restore tick"
 	)
 	default boolean brewTick()
 	{

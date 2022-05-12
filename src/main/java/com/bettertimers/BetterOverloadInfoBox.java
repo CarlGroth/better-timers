@@ -2,7 +2,6 @@ package com.bettertimers;
 
 import net.runelite.api.Client;
 import net.runelite.client.ui.overlay.infobox.InfoBox;
-import net.runelite.client.util.ImageUtil;
 
 import javax.inject.Inject;
 import java.awt.Color;
@@ -17,7 +16,7 @@ public class BetterOverloadInfoBox extends InfoBox
 	@Inject
 	public BetterOverloadInfoBox(Client client, BetterOverloadPlugin plugin, BetterOverloadConfig config)
 	{
-		super(ImageUtil.loadImageResource(BetterOverloadInfoBox.class, "overload.png"), plugin);
+		super(null, plugin);
 		this.plugin = plugin;
 		this.client = client;
 		this.config = config;
