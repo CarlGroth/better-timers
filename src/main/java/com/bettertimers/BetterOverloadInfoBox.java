@@ -47,7 +47,7 @@ public class BetterOverloadInfoBox extends InfoBox
 	{
 		if (plugin.overloadInTicks % 25 == 0 && config.brewTick())
 		{
-			return new Color(21, 214, 0);
+			return new Color(26, 204, 6);
 		}
 		else if (plugin.overloadInTicks < 25)
 		{
