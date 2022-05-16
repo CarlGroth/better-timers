@@ -66,20 +66,6 @@ public class BetterOverloadPlugin extends Plugin
 		}
 	}
 
-//	@Subscribe
-//	public void onActorDeath(ActorDeath actorDeath)
-//	{
-//		Actor actor = actorDeath.getActor();
-//		if (actor instanceof Player)
-//		{
-//			Player player = (Player) actor;
-//			if (player == client.getLocalPlayer())
-//			{
-//				ovlReset();
-//			}
-//		}
-//	}
-
 	@Subscribe
 	public void onGameTick(GameTick event)
 	{
