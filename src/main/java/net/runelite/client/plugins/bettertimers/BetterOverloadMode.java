@@ -1,4 +1,4 @@
-package com.bettertimers;
+package net.runelite.client.plugins.bettertimers;
 
 public enum BetterOverloadMode
 {

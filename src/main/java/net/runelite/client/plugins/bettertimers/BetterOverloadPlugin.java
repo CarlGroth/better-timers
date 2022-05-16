@@ -1,4 +1,4 @@
-package com.bettertimers;
+package net.runelite.client.plugins.bettertimers;
 
 import com.google.inject.Provides;
 
@@ -13,6 +13,7 @@ import net.runelite.api.Varbits;
 import net.runelite.api.events.ActorDeath;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.game.ItemManager;
@@ -44,7 +45,9 @@ public class BetterOverloadPlugin extends Plugin
 	boolean overloaded;
 	private BetterOverloadInfoBox infoBox;
 	int overloadInTicks = -1;
-	int ovlId = ItemID.OVERLOAD_4_20996;
+
+	private int ovlId = ItemID.OVERLOAD_4_20996;
+	private int varbOvl = 5418;
 
 	@Override
 	protected void startUp() throws Exception
@@ -63,19 +66,19 @@ public class BetterOverloadPlugin extends Plugin
 		}
 	}
 
-	@Subscribe
-	public void onActorDeath(ActorDeath actorDeath)
-	{
-		Actor actor = actorDeath.getActor();
-		if (actor instanceof Player)
-		{
-			Player player = (Player) actor;
-			if (player == client.getLocalPlayer())
-			{
-				ovlRunOut();
-			}
-		}
-	}
+//	@Subscribe
+//	public void onActorDeath(ActorDeath actorDeath)
+//	{
+//		Actor actor = actorDeath.getActor();
+//		if (actor instanceof Player)
+//		{
+//			Player player = (Player) actor;
+//			if (player == client.getLocalPlayer())
+//			{
+//				ovlReset();
+//			}
+//		}
+//	}
 
 	@Subscribe
 	public void onGameTick(GameTick event)
@@ -84,24 +87,24 @@ public class BetterOverloadPlugin extends Plugin
 		{
 			return;
 		}
-		if (overloadInTicks <= 0 || client.getVarbitValue(Varbits.IN_RAID) == 0)
+		if (client.getVarbitValue(varbOvl) > 0)
 		{
-			ovlRunOut();
+			ovlAdd();
+		}
+		if (client.getVarbitValue(varbOvl) == 0)
+		{
+			ovlReset();
 		}
 		overloadInTicks--;
 	}
 
 	@Subscribe
-	public void onChatMessage(ChatMessage event)
+	public void onVarbitChanged(VarbitChanged event)
 	{
-		final String message = event.getMessage();
-		if (message.startsWith("You drink some of your") && message.contains("overload") && client.getVarbitValue(Varbits.IN_RAID) == 1)
+		if (event.getIndex() == 1428)
 		{
-			drinkOvl();
-		}
-		if (message.equalsIgnoreCase("The effects of overload have worn off, and you feel normal again.") || message.contains("oh dear, you are dead"))
-		{
-			ovlRunOut();
+			overloadInTicks = client.getVarbitValue(varbOvl) * 25;
+			ovlAdd(); //Makes infobox persist after log out
 		}
 	}
 
@@ -111,10 +114,9 @@ public class BetterOverloadPlugin extends Plugin
 		return configManager.getConfig(BetterOverloadConfig.class);
 	}
 
-	public void drinkOvl()
+	public void ovlAdd()
 	{
 		overloaded = true;
-		overloadInTicks = 500;
 		if (infoBox == null)
 		{
 			infoBox = new BetterOverloadInfoBox(client, this, config);
@@ -123,7 +125,7 @@ public class BetterOverloadPlugin extends Plugin
 		}
 	}
 
-	public void ovlRunOut()
+	public void ovlReset()
 	{
 		overloaded = false;
 		infoBoxManager.removeInfoBox(infoBox);
@@ -143,7 +145,7 @@ public class BetterOverloadPlugin extends Plugin
 		int tmp = (ticks - min * 100) * 6;
 		int sec = tmp / 10;
 		int sec_tenth = tmp - sec * 10;
-		return new StringBuilder().append(min).append(sec < 10 ? ":0" : ":").append(sec).append(".")
-			.append(sec_tenth).toString();
+		return min + (sec < 10 ? ":0" : ":") + sec + "." +
+			sec_tenth;
 	}
 }

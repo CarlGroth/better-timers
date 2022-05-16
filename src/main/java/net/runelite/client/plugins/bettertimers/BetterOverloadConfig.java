@@ -1,4 +1,4 @@
-package com.bettertimers;
+package net.runelite.client.plugins.bettertimers;
 
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
@@ -29,5 +29,15 @@ public interface BetterOverloadConfig extends Config
 		return BetterOverloadMode.SECONDS;
 	}
 
+	@ConfigItem(
+		keyName = "vengeMode",
+		name = "Display mode",
+		description = "Configures how the vengeance timer is displayed.",
+		position = 2
+	)
+	default BetterOverloadMode vengeMode()
+	{
+		return BetterOverloadMode.SECONDS;
+	}
 
 }
