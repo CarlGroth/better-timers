@@ -40,6 +40,7 @@ public class BetterOverloadPlugin extends Plugin
 	boolean overloaded;
 	private BetterOverloadInfoBox infoBox;
 	int overloadInTicks = -1;
+	int prevOvlCycles = 0;
 
 	private int ovlId = ItemID.OVERLOAD_4_20996;
 	private int varbOvl = 5418;
@@ -54,6 +55,7 @@ public class BetterOverloadPlugin extends Plugin
 	{
 		overloaded = false;
 		overloadInTicks = -1;
+		prevOvlCycles = 0;
 		if (infoBox != null)
 		{
 			infoBoxManager.removeInfoBox(infoBox);
@@ -82,9 +84,16 @@ public class BetterOverloadPlugin extends Plugin
 	@Subscribe
 	public void onVarbitChanged(VarbitChanged event)
 	{
-		if (event.getIndex() == 1428)
+		if (client.getVarbitValue(varbOvl) > 0 && prevOvlCycles == 0)
+		{
+			prevOvlCycles = client.getVarbitValue(varbOvl);
+			overloadInTicks = client.getVarbitValue(varbOvl) * 25;
+			ovlAdd();
+		}
+		if (client.getVarbitValue(varbOvl) < prevOvlCycles || client.getVarbitValue(varbOvl) > prevOvlCycles)
 		{
 			overloadInTicks = client.getVarbitValue(varbOvl) * 25;
+			prevOvlCycles = client.getVarbitValue(varbOvl);
 			ovlAdd(); //Makes infobox persist after log out
 		}
 	}
@@ -108,6 +117,7 @@ public class BetterOverloadPlugin extends Plugin
 
 	public void ovlReset()
 	{
+		prevOvlCycles = 0;
 		overloaded = false;
 		infoBoxManager.removeInfoBox(infoBox);
 		infoBox = null;
