@@ -5,12 +5,12 @@ import net.runelite.client.ui.overlay.infobox.InfoBox;
 
 import javax.inject.Inject;
 import java.awt.Color;
+import net.runelite.client.ui.overlay.infobox.InfoBoxPriority;
 
 public class BetterOverloadInfoBox extends InfoBox
 {
 
 	private final BetterOverloadPlugin plugin;
-	private Client client;
 	private final BetterOverloadConfig config;
 
 	@Inject
@@ -18,8 +18,8 @@ public class BetterOverloadInfoBox extends InfoBox
 	{
 		super(null, plugin);
 		this.plugin = plugin;
-		this.client = client;
 		this.config = config;
+		setPriority(InfoBoxPriority.MED);
 	}
 
 	@Override

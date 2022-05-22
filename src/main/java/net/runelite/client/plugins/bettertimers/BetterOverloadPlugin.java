@@ -42,8 +42,7 @@ public class BetterOverloadPlugin extends Plugin
 	int overloadInTicks = -1;
 	int prevOvlCycles = 0;
 
-	private int ovlId = ItemID.OVERLOAD_4_20996;
-	private int varbOvl = 5418;
+	private final int varbOvl = 5418;
 
 	@Override
 	protected void startUp() throws Exception
@@ -110,6 +109,7 @@ public class BetterOverloadPlugin extends Plugin
 		if (infoBox == null)
 		{
 			infoBox = new BetterOverloadInfoBox(client, this, config);
+			int ovlId = ItemID.OVERLOAD_4_20996;
 			infoBox.setImage(itemManager.getImage(ovlId));
 			infoBoxManager.addInfoBox(infoBox);
 		}
