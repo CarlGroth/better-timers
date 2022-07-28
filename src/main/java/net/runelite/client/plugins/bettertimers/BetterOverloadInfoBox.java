@@ -52,6 +52,9 @@ public class BetterOverloadInfoBox extends InfoBox
 		{
 			return Color.RED;
 		}
+		else if (plugin.overloadInTicks % 25 < config.brewWarningTicks()) {
+			return Color.YELLOW;
+		}
 		return Color.WHITE;
 	}
 
