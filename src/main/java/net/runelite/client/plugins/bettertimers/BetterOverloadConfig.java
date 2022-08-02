@@ -28,4 +28,15 @@ public interface BetterOverloadConfig extends Config
 	{
 		return BetterOverloadMode.SECONDS;
 	}
+
+	@ConfigItem(
+			keyName = "brewWarningTicks",
+			name = "Brew Warning Ticks",
+			description = "Shows the timer in yellow this many ticks ahead of the overload restore tick. Set to 0 to disable.",
+			position = 3
+	)
+	default int brewWarningTicks()
+	{
+		return 0;
+	}
 }
