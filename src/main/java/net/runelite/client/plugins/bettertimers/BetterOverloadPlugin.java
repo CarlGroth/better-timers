@@ -42,7 +42,13 @@ public class BetterOverloadPlugin extends Plugin
 	int overloadInTicks = -1;
 	int prevOvlCycles = 0;
 
+	boolean salted;
+	private BetterOverloadSaltInfoBox saltInfoBox;
+	int saltInTicks = -1;
+	int prevSaltCycles = 0;
+
 	private final int varbOvl = 5418;
+	private final int varbSalt = 14344;
 
 	@Override
 	protected void startUp() throws Exception
@@ -60,12 +66,22 @@ public class BetterOverloadPlugin extends Plugin
 			infoBoxManager.removeInfoBox(infoBox);
 			infoBox = null;
 		}
+
+		salted = false;
+		saltInTicks = -1;
+		prevSaltCycles = 0;
+		if (saltInfoBox != null)
+		{
+			infoBoxManager.removeInfoBox(saltInfoBox);
+			saltInfoBox = null;
+		}
 	}
 
 	@Subscribe
 	public void onGameTick(GameTick event)
 	{
-		if (!overloaded)
+		System.out.println(saltInTicks);
+		if (!overloaded && !salted)
 		{
 			return;
 		}
@@ -77,7 +93,16 @@ public class BetterOverloadPlugin extends Plugin
 		{
 			ovlReset();
 		}
+		if (client.getVarbitValue(varbSalt) > 0)
+		{
+			saltAdd();
+		}
+		if (client.getVarbitValue(varbSalt) == 0)
+		{
+			saltReset();
+		}
 		overloadInTicks--;
+		saltInTicks--;
 	}
 
 	@Subscribe
@@ -94,6 +119,20 @@ public class BetterOverloadPlugin extends Plugin
 			overloadInTicks = client.getVarbitValue(varbOvl) * 25;
 			prevOvlCycles = client.getVarbitValue(varbOvl);
 			ovlAdd(); //Makes infobox persist after log out
+		}
+
+		if (client.getVarbitValue(varbSalt) > 0 && prevSaltCycles == 0)
+		{
+			prevSaltCycles = client.getVarbitValue(varbSalt);
+			saltInTicks = client.getVarbitValue(varbSalt) * 25;
+			saltAdd();
+		}
+
+		if (client.getVarbitValue(varbSalt) < prevSaltCycles || client.getVarbitValue(varbSalt) > prevSaltCycles)
+		{
+			saltInTicks = client.getVarbitValue(varbSalt) * 25;
+			prevSaltCycles = client.getVarbitValue(varbSalt);
+			saltAdd(); //Makes infobox persist after log out
 		}
 	}
 
@@ -121,6 +160,26 @@ public class BetterOverloadPlugin extends Plugin
 		overloaded = false;
 		infoBoxManager.removeInfoBox(infoBox);
 		infoBox = null;
+	}
+
+	public void saltAdd()
+	{
+		salted = true;
+		if (saltInfoBox == null)
+		{
+			saltInfoBox = new BetterOverloadSaltInfoBox(client, this, config);
+			int saltId = 27343;
+			saltInfoBox.setImage(itemManager.getImage(saltId));
+			infoBoxManager.addInfoBox(saltInfoBox);
+		}
+	}
+
+	public void saltReset()
+	{
+		prevSaltCycles = 0;
+		salted = false;
+		infoBoxManager.removeInfoBox(saltInfoBox);
+		saltInfoBox = null;
 	}
 
 	public static String to_mmss(int ticks)

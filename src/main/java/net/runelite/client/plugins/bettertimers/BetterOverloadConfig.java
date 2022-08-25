@@ -39,4 +39,15 @@ public interface BetterOverloadConfig extends Config
 	{
 		return 0;
 	}
+
+	@ConfigItem(
+		keyName = "enableSalt",
+		name = "Enable salt timer",
+		description = "Enables the smelly salt timer, with the overload settings",
+		position = 4
+	)
+	default boolean enableSalt()
+	{
+		return true;
+	}
 }
