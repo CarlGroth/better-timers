@@ -80,7 +80,6 @@ public class BetterOverloadPlugin extends Plugin
 	@Subscribe
 	public void onGameTick(GameTick event)
 	{
-		System.out.println(saltInTicks);
 		if (!overloaded && !salted)
 		{
 			return;
