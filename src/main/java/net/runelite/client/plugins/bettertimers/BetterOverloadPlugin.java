@@ -164,6 +164,9 @@ public class BetterOverloadPlugin extends Plugin
 	public void saltAdd()
 	{
 		salted = true;
+		if(!config.enableSalt()){
+			return;
+		}
 		if (saltInfoBox == null)
 		{
 			saltInfoBox = new BetterOverloadSaltInfoBox(client, this, config);
