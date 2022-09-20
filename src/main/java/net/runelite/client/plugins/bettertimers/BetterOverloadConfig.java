@@ -50,4 +50,15 @@ public interface BetterOverloadConfig extends Config
 	{
 		return true;
 	}
+
+	@ConfigItem(
+			keyName = "enableMenaphiteRemedy",
+			name = "Enable menaphite remedy timer",
+			description = "Enables the menaphite remedy timer, with the overload settings",
+			position = 5
+	)
+	default boolean enableMenaphiteRemedy()
+	{
+		return true;
+	}
 }

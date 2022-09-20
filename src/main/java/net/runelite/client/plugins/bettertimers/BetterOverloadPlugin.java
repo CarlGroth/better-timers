@@ -47,8 +47,14 @@ public class BetterOverloadPlugin extends Plugin
 	int saltInTicks = -1;
 	int prevSaltCycles = 0;
 
+	boolean menaphiteRemedied;
+	private BetterOverloadMenaphiteRemedyInfoBox menaphiteRemedyInfoBox;
+	int menaphiteRemedyInTicks = -1;
+	int prevMenaphiteRemedyCycles = 0;
+	
 	private final int varbOvl = 5418;
 	private final int varbSalt = 14344;
+	private final int varbMenaphiteRemedy = 14448;
 
 	@Override
 	protected void startUp() throws Exception
@@ -75,12 +81,21 @@ public class BetterOverloadPlugin extends Plugin
 			infoBoxManager.removeInfoBox(saltInfoBox);
 			saltInfoBox = null;
 		}
+
+		menaphiteRemedied = false;
+		menaphiteRemedyInTicks = -1;
+		prevMenaphiteRemedyCycles = 0;
+		if (menaphiteRemedyInfoBox != null)
+		{
+			infoBoxManager.removeInfoBox(menaphiteRemedyInfoBox);
+			menaphiteRemedyInfoBox = null;
+		}
 	}
 
 	@Subscribe
 	public void onGameTick(GameTick event)
 	{
-		if (!overloaded && !salted)
+		if (!overloaded && !salted && !menaphiteRemedied)
 		{
 			return;
 		}
@@ -100,8 +115,17 @@ public class BetterOverloadPlugin extends Plugin
 		{
 			saltReset();
 		}
+		if (client.getVarbitValue(varbMenaphiteRemedy) > 0)
+		{
+			menaphiteRemedyAdd();
+		}
+		if (client.getVarbitValue(varbMenaphiteRemedy) == 0)
+		{
+			menaphiteRemedyReset();
+		}
 		overloadInTicks--;
 		saltInTicks--;
+		menaphiteRemedyInTicks--;
 	}
 
 	@Subscribe
@@ -132,6 +156,20 @@ public class BetterOverloadPlugin extends Plugin
 			saltInTicks = client.getVarbitValue(varbSalt) * 25;
 			prevSaltCycles = client.getVarbitValue(varbSalt);
 			saltAdd(); //Makes infobox persist after log out
+		}
+
+		if (client.getVarbitValue(varbMenaphiteRemedy) > 0 && prevMenaphiteRemedyCycles == 0)
+		{
+			prevMenaphiteRemedyCycles = client.getVarbitValue(varbMenaphiteRemedy);
+			menaphiteRemedyInTicks = client.getVarbitValue(varbMenaphiteRemedy) * 25;
+			menaphiteRemedyAdd();
+		}
+
+		if (client.getVarbitValue(varbMenaphiteRemedy) < prevMenaphiteRemedyCycles || client.getVarbitValue(varbMenaphiteRemedy) > prevMenaphiteRemedyCycles)
+		{
+			menaphiteRemedyInTicks = client.getVarbitValue(varbMenaphiteRemedy) * 25;
+			prevMenaphiteRemedyCycles = client.getVarbitValue(varbMenaphiteRemedy);
+			menaphiteRemedyAdd(); //Makes infobox persist after log out
 		}
 	}
 
@@ -182,6 +220,29 @@ public class BetterOverloadPlugin extends Plugin
 		salted = false;
 		infoBoxManager.removeInfoBox(saltInfoBox);
 		saltInfoBox = null;
+	}
+
+	public void menaphiteRemedyAdd()
+	{
+		menaphiteRemedied = true;
+		if(!config.enableMenaphiteRemedy()){
+			return;
+		}
+		if (menaphiteRemedyInfoBox == null)
+		{
+			menaphiteRemedyInfoBox = new BetterOverloadMenaphiteRemedyInfoBox(client, this, config);
+			int menaphiteRemedyId = 27202;
+			menaphiteRemedyInfoBox.setImage(itemManager.getImage(menaphiteRemedyId));
+			infoBoxManager.addInfoBox(menaphiteRemedyInfoBox);
+		}
+	}
+
+	public void menaphiteRemedyReset()
+	{
+		prevMenaphiteRemedyCycles = 0;
+		menaphiteRemedied = false;
+		infoBoxManager.removeInfoBox(menaphiteRemedyInfoBox);
+		menaphiteRemedyInfoBox = null;
 	}
 
 	public static String to_mmss(int ticks)
