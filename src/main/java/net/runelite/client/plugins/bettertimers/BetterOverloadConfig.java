@@ -1,5 +1,7 @@
 package net.runelite.client.plugins.bettertimers;
 
+import java.awt.Color;
+
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
@@ -7,7 +9,8 @@ import net.runelite.client.config.ConfigItem;
 @ConfigGroup("beanLoad")
 public interface BetterOverloadConfig extends Config
 {
-
+	final Color BREW_TICK_COLOR = new Color(26, 204, 6);
+ 
 	@ConfigItem(
 		keyName = "brewTick",
 		name = "Show brew tick",
@@ -60,5 +63,21 @@ public interface BetterOverloadConfig extends Config
 	default boolean enableMenaphiteRemedy()
 	{
 		return true;
+	}
+
+	default Color getTextColor(int ticks)
+	{
+		if (ticks % 25 == 0 && this.brewTick())
+		{
+			return BREW_TICK_COLOR;
+		}
+		else if (ticks < 25)
+		{
+			return Color.RED;
+		}
+		else if (ticks % 25 < this.brewWarningTicks()) {
+			return Color.YELLOW;
+		}
+		return Color.WHITE;
 	}
 }

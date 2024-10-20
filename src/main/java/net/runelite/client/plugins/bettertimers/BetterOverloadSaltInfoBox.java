@@ -24,37 +24,13 @@ public class BetterOverloadSaltInfoBox extends InfoBox
 	@Override
 	public String getText()
 	{
-		String str;
-		if (config.overloadMode() == BetterOverloadMode.TICKS)
-		{
-			str = String.valueOf(plugin.saltInTicks);
-		}
-		else if (config.overloadMode() == BetterOverloadMode.DECIMALS)
-		{
-			str = BetterOverloadPlugin.to_mmss_precise_short(plugin.saltInTicks);
-		}
-		else
-		{
-			str = BetterOverloadPlugin.to_mmss(plugin.saltInTicks);
-		}
-		return str;
+		return config.overloadMode().format(plugin.saltInTicks);
 	}
 
 	@Override
 	public Color getTextColor()
 	{
-		if (plugin.saltInTicks % 25 == 0 && config.brewTick())
-		{
-			return new Color(26, 204, 6);
-		}
-		else if (plugin.saltInTicks < 25)
-		{
-			return Color.RED;
-		}
-		else if (plugin.saltInTicks % 25 < config.brewWarningTicks()) {
-			return Color.YELLOW;
-		}
-		return Color.WHITE;
+		return config.getTextColor(plugin.saltInTicks);
 	}
 
 	@Override

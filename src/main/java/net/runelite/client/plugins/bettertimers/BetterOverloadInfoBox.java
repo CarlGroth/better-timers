@@ -25,37 +25,13 @@ public class BetterOverloadInfoBox extends InfoBox
 	@Override
 	public String getText()
 	{
-		String str;
-		if (config.overloadMode() == BetterOverloadMode.TICKS)
-		{
-			str = String.valueOf(plugin.overloadInTicks);
-		}
-		else if (config.overloadMode() == BetterOverloadMode.DECIMALS)
-		{
-			str = BetterOverloadPlugin.to_mmss_precise_short(plugin.overloadInTicks);
-		}
-		else
-		{
-			str = BetterOverloadPlugin.to_mmss(plugin.overloadInTicks);
-		}
-		return str;
+		return config.overloadMode().format(plugin.overloadInTicks);
 	}
 
 	@Override
 	public Color getTextColor()
 	{
-		if (plugin.overloadInTicks % 25 == 0 && config.brewTick())
-		{
-			return new Color(26, 204, 6);
-		}
-		else if (plugin.overloadInTicks < 25)
-		{
-			return Color.RED;
-		}
-		else if (plugin.overloadInTicks % 25 < config.brewWarningTicks()) {
-			return Color.YELLOW;
-		}
-		return Color.WHITE;
+		return config.getTextColor(plugin.overloadInTicks);
 	}
 
 	@Override
